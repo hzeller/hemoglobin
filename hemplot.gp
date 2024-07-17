@@ -1,3 +1,11 @@
+param_datafile="hem.data";
+
+param_emphasize_factor=0;  # 0 not, 1=oxi, 2=non-oxi
+param_lerp=-1;
+
+# We only really want to show detailed information in the overview graph
+param_color_explain=(param_lerp < 0 && param_emphasize_factor == 0);
+
 set terminal svg size 800,480
 set output "hemplot.svg"
 
@@ -28,30 +36,32 @@ set ylabel "Absorption (log)"
 set key left top
 
 set logscale y
-set format y ""
+set format y ""   # Don't want to distract with absolute numbers
 
 set arrow from 660,200 to 660,100000 nohead
 set arrow from 940,200 to 940,100000 nohead
-set label "Bei λ=660nm (Rot)\nHb absorbiert deutlich (10x)\nmehr Licht als HbO₂" center at 660, 300000
-set label "HbO₂ sieht \"röter\" aus." left at 670, 60000
-set label "Bei λ=940nm (Infrarot) umgekehrt:\nhier absorbiert HbO₂ mehr als Hb (x1.75)" right at 990, 300000
 
-# A little bit annotation.
-#set label "↕ x10\nmehr Licht absorbiert\nvon Hb" left at 665, 1300
-#set label "↕ x1.75" left at 940, 900
+if (param_color_explain) {
+  set label "Bei λ=660nm (Rot)\nHb absorbiert deutlich (10x)\nmehr Licht als HbO₂" center at 660, 300000
+  set label "HbO₂ sieht \"röter\" aus." left at 670, 60000
+  set label "Bei λ=940nm (Infrarot) umgekehrt:\nhier absorbiert HbO₂ mehr als Hb (x1.75)" right at 990, 300000
+} else {
+  set label "λ=660nm (Rot)" center at 660, 150000
+  set label "λ=940nm (Infrarot)" center at 940, 150000
+}
 
-# Show the following either or.
-# -- TODO: is there a way to pass an option and make some sort if if-else ?
-
-#set label "Bei voller Sättigung\nist 940nm 3.8x mehr absorbiert\nals bei 660nm\n" right at 550, 1000
-#set arrow from 500, 319  to 660, 319  lc rgb "red"
-#set arrow from 500, 1214 to 940, 1214 lc rgb "red"
-#set arrow from 560, 350 to 560, 1000
-
-#set label "Ohne O₂\nist 940nm 0.21x absorbiert\nals bei 660nm\n" right at 550, 2200
-#set arrow from 500, 3226  to 660, 3226  lc rgb "#aa00ff"
-#set arrow from 500, 693  to  940, 693  lc rgb "#aa00ff"
-#set arrow from 560, 2800 to 560, 780
+if (param_emphasize_factor == 1) {
+  set label "Bei voller Sättigung\nist 940nm 3.8x mehr absorbiert\nals bei 660nm\n" right at 550, 1000
+  set arrow from 500, 319  to 660, 319  lc rgb "red"
+  set arrow from 500, 1214 to 940, 1214 lc rgb "red"
+  set arrow from 560, 350 to 560, 1000
+}
+else if (param_emphasize_factor == 2) {
+  set label "Ohne O₂\nist 940nm 0.21x absorbiert\nals bei 660nm\n" right at 550, 2200
+  set arrow from 500, 3226  to 660, 3226  lc rgb "#aa00ff"
+  set arrow from 500, 693  to  940, 693  lc rgb "#aa00ff"
+  set arrow from 560, 2800 to 560, 780
+}
 
 # Source of data
 set label "Raw data measured by\nW. B. Gratzer, Med. Res. Council Labs, Holly Hill, London\nN. Kollias, Wellman Laboratories, Harvard Medical School, Boston\ncompiled by Scott Prahl <https://omlc.org/spectra/hemoglobin/>\nPlot <https://github.com/hzeller/hemoglobin>\n" left at 250, 50 font "Helvetica,7"
@@ -59,6 +69,24 @@ set label "Raw data measured by\nW. B. Gratzer, Med. Res. Council Labs, Holly Hi
 set key autotitle columnhead  # extract title from first line in data.
 set grid xtics                # Just xtics sufficient, y would be too noisy.
 
-plot [250:1000] \
-  "hem.data" using 1:($2 * 1.0) with lines lw 3 lc rgb "red", \
-  ""         using 1:($3 * 1.0) with lines lw 3 lc rgb "#aa00ff"
+if (param_lerp < 0) {
+  # Depending on the hightlight, we want the colorful graph last to be on top
+  if (param_emphasize_factor == 1) {
+    plot [250:1000] [100:1000000] \
+      param_datafile  using 1:($3 * 1.0) with lines lw 3 lc rgb "gray", \
+      param_datafile using 1:($2 * 1.0) with lines lw 3 lc rgb "red"
+  } else if (param_emphasize_factor == 2) {
+    plot [250:1000] [100:1000000] \
+      param_datafile using 1:($2 * 1.0) with lines lw 3 lc rgb "gray", \
+      param_datafile  using 1:($3 * 1.0) with lines lw 3 lc rgb "#aa00ff"
+  } else {
+    plot [250:1000] [100:1000000] \
+      param_datafile using 1:($2 * 1.0) with lines lw 3 lc rgb "red", \
+      param_datafile  using 1:($3 * 1.0) with lines lw 3 lc rgb "#aa00ff"
+  }
+} else {
+  plot [250:1000] [100:1000000] \
+    param_datafile \
+    using 1:(($2 * param_lerp) + ($3 * (1-param_lerp))) \
+    with lines lw 3 lc rgb "black" title sprintf("Hb %3d%%", param_lerp * 100)
+}
