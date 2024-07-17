@@ -24,9 +24,9 @@ so dickem Finger gemessen wird, dann misst man in beiden Wellelängen nur
 die Hälfte; aber da ja die Messung bei beiden Wellenlängen auf die Hälfte
 reduziert sind, ist ja das erwartete Verhältnis von 3.8x immer noch gleich.
 
-![](img/saturated.png)
+![](img/saturated-hem.png)
 
-![](img/unsaturated.png)
+![](img/unsaturated-hem.png)
 
 Also dadurch dass man bei beiden Wellenlaengen misst, rechnet sich das raus.
 
