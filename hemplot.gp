@@ -1,12 +1,17 @@
 param_datafile="hem.data";
 param_outfile = exists("outfile") ? outfile : "hemplot.svg"
 
-set terminal svg size 800,480
-set output param_outfile
-
 # 0 not, 1=oxi, 2=non-oxi
 param_emphasize_factor= exists("emphasize_factor") ? emphasize_factor : 0;
-param_lerp=exists("lerp") ? lerp : -1
+
+# Animation
+param_lerp=exists("lerp_percent") ? (lerp_percent / 100.0) : -1
+if (exists("lerp_basename")) {
+   param_outfile=sprintf("%s-%03d.svg", lerp_basename, lerp_percent);
+}
+
+set terminal svg size 800,480
+set output param_outfile
 
 # Extracted from the datafile, as we need these to place the arrows
 # egrep "^(660|940)" hem.data
@@ -73,7 +78,7 @@ else if (param_emphasize_factor == 2) {
 }
 
 # Source of data
-set label "Raw data measured by\nW. B. Gratzer, Med. Res. Council Labs, Holly Hill, London\nN. Kollias, Wellman Laboratories, Harvard Medical School, Boston\ncompiled by Scott Prahl <https://omlc.org/spectra/hemoglobin/>\nPlot <https://github.com/hzeller/hemoglobin>\n" left at 250, 50 font "Helvetica,7"
+set label "Raw data measured by\n * W. B. Gratzer, Med. Res. Council Labs, Holly Hill, London\n * N. Kollias, Wellman Laboratories, Harvard Medical School, Boston\nCompiled by Scott Prahl <https://omlc.org/spectra/hemoglobin/>\nPlot CC-BY-SA H. Zeller <https://github.com/hzeller/hemoglobin>\n" left at 250, 50 font "Helvetica,7"
 
 set key autotitle columnhead  # extract title from first line in data.
 set grid xtics                # Just xtics sufficient, y would be too noisy.
@@ -85,10 +90,13 @@ if (param_lerp >= 0) {
   circle_940nm_x=940-circle_r-20
 
   set label "Lichtdurchlass" at (940 + 660) / 2, 80000 center font "Helvetica Bold,14"
+
+  # Rot durchlass
   y_660nm = oxi_lo_660nm + (oxi_hi_660nm - oxi_lo_660nm) * param_lerp
   set arrow from 660, y_660nm to circle_660nm_x,8000 nohead
   set arrow from circle_660nm_x,8000 to circle_660nm_x,11000 nohead
 
+  # Infrarot durchlass
   y_940nm = oxi_lo_940nm + (oxi_hi_940nm - oxi_lo_940nm) * param_lerp
   set arrow from 940, y_940nm to circle_940nm_x,8000 nohead
   set arrow from circle_940nm_x,8000 to circle_940nm_x,11000 nohead
@@ -124,5 +132,5 @@ if (param_lerp < 0) {
   plot [250:1000] [100:1000000] \
     param_datafile \
     using 1:(($2 * param_lerp) + ($3 * (1-param_lerp))) \
-    with lines lw 3 lc rgb "black" title sprintf("Hb %3d%%", param_lerp * 100)
+    with lines lw 3 lc rgb "black" title sprintf("Hb SpO₂ %3d%%", param_lerp * 100)
 }
