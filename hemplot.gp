@@ -1,7 +1,12 @@
 param_datafile="hem.data";
+param_outfile = exists("outfile") ? outfile : "hemplot.svg"
 
-param_emphasize_factor=0;  # 0 not, 1=oxi, 2=non-oxi
-param_lerp=-1;
+set terminal svg size 800,480
+set output param_outfile
+
+# 0 not, 1=oxi, 2=non-oxi
+param_emphasize_factor= exists("emphasize_factor") ? emphasize_factor : 0;
+param_lerp=exists("lerp") ? lerp : -1
 
 # Extracted from the datafile, as we need these to place the arrows
 # egrep "^(660|940)" hem.data
@@ -12,9 +17,6 @@ oxi_hi_940nm=1214
 
 # We only really want to show detailed information in the overview graph
 param_color_explain=(param_lerp < 0 && param_emphasize_factor == 0);
-
-set terminal svg size 800,480
-set output "hemplot.svg"
 
 set palette defined (380 "black", 400 "dark-violet", 440 "blue", 490 '#00b0c0', 530 "green", 560 "yellow", 620 "red", 780 "black")
 
