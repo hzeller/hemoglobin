@@ -129,6 +129,8 @@ if (param_lerp < 0) {
       param_datafile  using 1:($3 * 1.0) with lines lw 3 lc rgb "#aa00ff"
   }
 } else {
+  set key font ",20"
+  set key right top
   plot [250:1000] [100:1000000] \
     param_datafile \
     using 1:(($2 * param_lerp) + ($3 * (1-param_lerp))) \
