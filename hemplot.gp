@@ -3,6 +3,13 @@ param_datafile="hem.data";
 param_emphasize_factor=0;  # 0 not, 1=oxi, 2=non-oxi
 param_lerp=-1;
 
+# Extracted from the datafile, as we need these to place the arrows
+# egrep "^(660|940)" hem.data
+oxi_lo_660nm=3226.5
+oxi_hi_660nm=319.6
+oxi_lo_940nm=693.44
+oxi_hi_940nm=1214
+
 # We only really want to show detailed information in the overview graph
 param_color_explain=(param_lerp < 0 && param_emphasize_factor == 0);
 
@@ -68,6 +75,33 @@ set label "Raw data measured by\nW. B. Gratzer, Med. Res. Council Labs, Holly Hi
 
 set key autotitle columnhead  # extract title from first line in data.
 set grid xtics                # Just xtics sufficient, y would be too noisy.
+
+# Show qualitative view of how 'strong' the light is coming through
+if (param_lerp >= 0) {
+  circle_r=40
+  circle_660nm_x=660+circle_r+20
+  circle_940nm_x=940-circle_r-20
+
+  set label "Lichtdurchlass" at (940 + 660) / 2, 80000 center font "Helvetica Bold,14"
+  y_660nm = oxi_lo_660nm + (oxi_hi_660nm - oxi_lo_660nm) * param_lerp
+  set arrow from 660, y_660nm to circle_660nm_x,8000 nohead
+  set arrow from circle_660nm_x,8000 to circle_660nm_x,11000 nohead
+
+  y_940nm = oxi_lo_940nm + (oxi_hi_940nm - oxi_lo_940nm) * param_lerp
+  set arrow from 940, y_940nm to circle_940nm_x,8000 nohead
+  set arrow from circle_940nm_x,8000 to circle_940nm_x,11000 nohead
+
+  set style fill solid 1
+  set object circle at circle_660nm_x,30000 size circle_r + 2 lw 0 fc rgb "black"
+  set object circle at circle_940nm_x,30000 size circle_r + 2 lw 0 fc rgb "black"
+
+  set style fill solid 0.4 + (param_lerp * 0.6)
+  set object circle at circle_660nm_x,30000 size circle_r lw 0 fc rgb "red"
+
+  set style fill solid 0.3 + ((1-param_lerp) * 0.6)  # opposite on the 940nm
+  set object circle at circle_940nm_x,30000 size circle_r lw 0 fc rgb "white"
+
+}
 
 if (param_lerp < 0) {
   # Depending on the hightlight, we want the colorful graph last to be on top

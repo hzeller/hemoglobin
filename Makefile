@@ -1,7 +1,7 @@
 
 all: hemplot.svg hemplot.png pulse.svg pulse.png
 
-%.svg : hemplot.gp hem.data
+%.svg : %.gp hem.data
 	gnuplot $<
 
 %.png : %.svg
