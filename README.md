@@ -1,8 +1,10 @@
-Plot der Daten zusammengestellt von
-Scott Prahl <https://omlc.org/spectra/hemoglobin/> mit highlight von relevanten
-Informationen die von Pulsoximetern gnutzt werden.
+# Pulsoximeter
+(sorry, in German, was used in a German-speaking country)
 
-Rebuild: `make`
+## Funktionsweise
+Rebuild graphs: `make`
+
+To create the animation: `./create-animation.sh somename`
 
 ![](img/hem.png)
 
@@ -38,3 +40,20 @@ messen, dass im Infraroten 3.8x mehr absorbiert wird.
 
 Also duch das Messen an zwei Wellenlaengen rechnen sich Schwankungen
 automatisch raus.
+
+## Animation
+
+https://youtu.be/TrGO6Bi2npU
+
+[![](img/anim.png)](https://youtu.be/TrGO6Bi2npU)
+
+## Sources
+<hr/>
+The raw data in [`hem.data`](./hem.data) is compiled by
+Scott Prahl <https://omlc.org/spectra/hemoglobin/>
+</hr>
+This plot and animation is shared under the License
+CC-BY-SA Henner Zeller <h.zeller@acm.org>,
+so you're free to use and modify in any context as long as you provide
+Attribution and share your modification under the same license.
+https://creativecommons.org/licenses/by-sa/4.0/
