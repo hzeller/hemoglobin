@@ -48,13 +48,12 @@ https://youtu.be/TrGO6Bi2npU
 [ ![](img/anim.png) ](https://youtu.be/TrGO6Bi2npU)
 
 ## Sources
-<hr/>
-The raw data in [`hem.data`](./hem.data) is compiled by
-Scott Prahl <https://omlc.org/spectra/hemoglobin/>
 
-</hr>
+The raw data in [hem.data](./hem.data) is compiled by
+Scott Prahl &lt;[https://omlc.org/spectra/hemoglobin/]&gt;
+
 This plot and animation is shared under the License
-CC-BY-SA Henner Zeller <h.zeller@acm.org>,
+CC-BY-SA Henner Zeller &lt;h.zeller@acm.org&gt;,
 so you're free to use and modify in any context as long as you provide
 Attribution and share your modification under the same license.
-https://creativecommons.org/licenses/by-sa/4.0/
+&lt;[https://creativecommons.org/licenses/by-sa/4.0]&gt;
