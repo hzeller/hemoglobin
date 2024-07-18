@@ -45,12 +45,13 @@ automatisch raus.
 
 https://youtu.be/TrGO6Bi2npU
 
-[![](img/anim.png)](https://youtu.be/TrGO6Bi2npU)
+[ ![](img/anim.png) ](https://youtu.be/TrGO6Bi2npU)
 
 ## Sources
 <hr/>
 The raw data in [`hem.data`](./hem.data) is compiled by
 Scott Prahl <https://omlc.org/spectra/hemoglobin/>
+
 </hr>
 This plot and animation is shared under the License
 CC-BY-SA Henner Zeller <h.zeller@acm.org>,
