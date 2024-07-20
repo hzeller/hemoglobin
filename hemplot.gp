@@ -35,6 +35,7 @@ set multiplot
 set origin 0.184, 0.145
 set size 0.545, 0.1
 unset tics
+unset key
 plot [380:780] '+' u 1:(1):1 w impulse lc palette lw 1 notitle
 
 
@@ -66,15 +67,15 @@ if (param_color_explain) {
 
 if (param_emphasize_factor == 1) {
   set label "Bei voller Sättigung\nist 940nm 3.8x mehr absorbiert\nals bei 660nm\n" right at 550, 1000
-  set arrow from 500, 319  to 660, 319  lc rgb "red"
-  set arrow from 500, 1214 to 940, 1214 lc rgb "red"
-  set arrow from 560, 350 to 560, 1000
+  set arrow from 500, oxi_hi_660nm to 660, oxi_hi_660nm  lc rgb "red"
+  set arrow from 500, oxi_hi_940nm to 940, oxi_hi_940nm lc rgb "red"
+  set arrow from 560, 350 to 560, 1000  # indicate direction
 }
 else if (param_emphasize_factor == 2) {
   set label "Ohne O₂\nist 940nm 0.21x absorbiert\nals bei 660nm\n" right at 550, 2200
-  set arrow from 500, 3226  to 660, 3226  lc rgb "#aa00ff"
-  set arrow from 500, 693  to  940, 693  lc rgb "#aa00ff"
-  set arrow from 560, 2800 to 560, 780
+  set arrow from 500, oxi_lo_660nm to 660, oxi_lo_660nm  lc rgb "#aa00ff"
+  set arrow from 500, oxi_lo_940nm to 940, oxi_lo_940nm  lc rgb "#aa00ff"
+  set arrow from 560, 2800 to 560, 780  # indicate direction
 }
 
 # Source of data
@@ -112,6 +113,8 @@ if (param_lerp >= 0) {
   set object circle at circle_940nm_x,30000 size circle_r lw 0 fc rgb "white"
 
 }
+
+set y2range [0:0]  # not using y2range
 
 if (param_lerp < 0) {
   # Depending on the hightlight, we want the colorful graph last to be on top
