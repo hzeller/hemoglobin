@@ -2,9 +2,6 @@
 (sorry, in German, was used in a German-speaking country)
 
 ## Funktionsweise
-Rebuild graphs: `make`
-
-To create the animation: `./create-animation.sh somename`
 
 ![](img/hem.png)
 
@@ -46,6 +43,16 @@ automatisch raus.
 https://youtu.be/TrGO6Bi2npU
 
 [ ![](img/anim.png) ](https://youtu.be/TrGO6Bi2npU)
+
+## Build
+
+To re-create
+
+Rebuild graphs: `make`
+
+Create animation: `./create-animation.sh`  (builds `animation.mp4`)
+
+`make anim-clean` to delete the intermediate annimation pictures.
 
 ## Sources
 

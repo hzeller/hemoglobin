@@ -1,5 +1,12 @@
 param_datafile="hem.data";
-param_outfile = exists("outfile") ? outfile : "hemplot.svg"
+param_outfile = exists("outfile") ? outfile : "hemplot.png"
+
+param_width=2400
+param_height=1440
+
+# Make sizes relevant to final size.
+param_small_font=param_width / 150
+param_lw=param_width / 300
 
 # 0 not, 1=oxi, 2=non-oxi
 param_emphasize_factor= exists("emphasize_factor") ? emphasize_factor : 0;
@@ -7,10 +14,12 @@ param_emphasize_factor= exists("emphasize_factor") ? emphasize_factor : 0;
 # Animation
 param_lerp=exists("lerp_percent") ? (lerp_percent / 100.0) : -1
 if (exists("lerp_basename")) {
-   param_outfile=sprintf("%s-%03d.svg", lerp_basename, lerp_percent);
+   param_outfile=sprintf("%s-%03d.png", lerp_basename, lerp_percent);
 }
 
-set terminal svg size 800,480
+set terminal pngcairo size param_width, param_height \
+    font sprintf("Helvetica,%d", param_small_font * 1.8)
+
 set output param_outfile
 
 # Extracted from the datafile, as we need these to place the arrows
@@ -32,16 +41,18 @@ set multiplot
 
 #-- spectrum
 # hand-fudging until it matches up with text
-set origin 0.184, 0.145
-set size 0.545, 0.1
+set origin 0.187, 0.145
+set size 0.54, 0.1
 unset tics
 unset key
-plot [380:780] '+' u 1:(1):1 w impulse lc palette lw 1 notitle
+plot [380:780] '+' u 1:(1):1 w impulse lc palette lw 3 notitle
 
 
 # -- the actual data plot
 unset origin
 unset size
+set border lw param_lw / 2
+
 set label "<--- Ultraviolett" right at 380, 150
 set label "Infrarot -->"      left at 780, 150
 
@@ -53,8 +64,8 @@ set key left top
 set logscale y
 set format y ""   # Don't want to distract with absolute numbers
 
-set arrow from 660,200 to 660,100000 nohead
-set arrow from 940,200 to 940,100000 nohead
+set arrow from 660,200 to 660,100000 nohead lw param_lw / 2
+set arrow from 940,200 to 940,100000 nohead lw param_lw / 2
 
 if (param_color_explain) {
   set label "Bei λ=660nm (Rot)\nHb absorbiert deutlich (10x)\nmehr Licht als HbO₂" center at 660, 300000
@@ -67,22 +78,22 @@ if (param_color_explain) {
 
 if (param_emphasize_factor == 1) {
   set label "Bei voller Sättigung\nist 940nm 3.8x mehr absorbiert\nals bei 660nm\n" right at 550, 1000
-  set arrow from 500, oxi_hi_660nm to 660, oxi_hi_660nm  lc rgb "red"
-  set arrow from 500, oxi_hi_940nm to 940, oxi_hi_940nm lc rgb "red"
-  set arrow from 560, 350 to 560, 1000  # indicate direction
+  set arrow from 500,oxi_hi_660nm to 660,oxi_hi_660nm lw param_lw/3 lc rgb "red"
+  set arrow from 500,oxi_hi_940nm to 940,oxi_hi_940nm lw param_lw/3 lc rgb "red"
+  set arrow from 560,350 to 560,1000 lw param_lw/3    # indicate direction
 }
 else if (param_emphasize_factor == 2) {
   set label "Ohne O₂\nist 940nm 0.21x absorbiert\nals bei 660nm\n" right at 550, 2200
-  set arrow from 500, oxi_lo_660nm to 660, oxi_lo_660nm  lc rgb "#aa00ff"
-  set arrow from 500, oxi_lo_940nm to 940, oxi_lo_940nm  lc rgb "#aa00ff"
-  set arrow from 560, 2800 to 560, 780  # indicate direction
+  set arrow from 500,oxi_lo_660nm to 660,oxi_lo_660nm lw param_lw/3 lc rgb "#aa00ff"
+  set arrow from 500,oxi_lo_940nm to 940,oxi_lo_940nm lw param_lw/3 lc rgb "#aa00ff"
+  set arrow from 560,2800 to 560,780 lw param_lw/3 # indicate direction
 }
 
 # Source of data
-set label "Raw data measured by\n * W. B. Gratzer, Med. Res. Council Labs, Holly Hill, London\n * N. Kollias, Wellman Laboratories, Harvard Medical School, Boston\nCompiled by Scott Prahl <https://omlc.org/spectra/hemoglobin/>\nPlot CC-BY-SA H. Zeller <https://github.com/hzeller/hemoglobin>\n" left at 250, 50 font "Helvetica,7"
+set label "Raw data measured by\n * W. B. Gratzer, Med. Res. Council Labs, Holly Hill, London\n * N. Kollias, Wellman Laboratories, Harvard Medical School, Boston\nCompiled by Scott Prahl <https://omlc.org/spectra/hemoglobin/>\nPlot CC-BY-SA H. Zeller <https://github.com/hzeller/hemoglobin>\n" left at 250, 50 font sprintf("Helvetica,%d", param_small_font)
 
-set key autotitle columnhead  # extract title from first line in data.
-set grid xtics                # Just xtics sufficient, y would be too noisy.
+set key autotitle columnhead    # extract title from first line in data.
+set grid xtics lw param_lw / 4  # Just xtics sufficient, y would be too noisy.
 
 # Show qualitative view of how 'strong' the light is coming through
 if (param_lerp >= 0) {
@@ -90,7 +101,7 @@ if (param_lerp >= 0) {
   circle_660nm_x=660+circle_r+20
   circle_940nm_x=940-circle_r-20
 
-  set label "Lichtdurchlass" at (940 + 660) / 2, 80000 center font "Helvetica Bold,14"
+  set label "Lichtdurchlass" at (940 + 660) / 2, 80000 center font sprintf("Helvetica Bold,%d", 2 * param_small_font)
 
   # Rot durchlass
   y_660nm = oxi_lo_660nm + (oxi_hi_660nm - oxi_lo_660nm) * param_lerp
@@ -106,12 +117,15 @@ if (param_lerp >= 0) {
   set object circle at circle_660nm_x,30000 size circle_r + 2 lw 0 fc rgb "black"
   set object circle at circle_940nm_x,30000 size circle_r + 2 lw 0 fc rgb "black"
 
-  set style fill solid 0.4 + (param_lerp * 0.6)
-  set object circle at circle_660nm_x,30000 size circle_r lw 0 fc rgb "red"
+  red_fraction=0.5 + (param_lerp * 0.5)
+  red_lerp=sprintf("#%02x0000", 255 * red_fraction);
 
-  set style fill solid 0.3 + ((1-param_lerp) * 0.6)  # opposite on the 940nm
-  set object circle at circle_940nm_x,30000 size circle_r lw 0 fc rgb "white"
+  set object circle at circle_660nm_x,30000 size circle_r lw 0 fc rgb red_lerp
 
+  ir_fraction=0.3 + ((1-param_lerp) * 0.6)
+  ir_hex_value=255 * ir_fraction
+  ir_lerp=sprintf("#%02x%02x%02x", ir_hex_value, ir_hex_value, ir_hex_value)
+  set object circle at circle_940nm_x,30000 size circle_r lw 0 fc rgb ir_lerp
 }
 
 set y2range [0:0]  # not using y2range
@@ -120,22 +134,23 @@ if (param_lerp < 0) {
   # Depending on the hightlight, we want the colorful graph last to be on top
   if (param_emphasize_factor == 1) {
     plot [250:1000] [100:1000000] \
-      param_datafile  using 1:($3 * 1.0) with lines lw 3 lc rgb "gray", \
-      param_datafile using 1:($2 * 1.0) with lines lw 3 lc rgb "red"
+      param_datafile  using 1:($3 * 1.0) with lines lw param_lw lc rgb "gray", \
+      param_datafile using 1:($2 * 1.0) with lines lw param_lw lc rgb "red"
   } else if (param_emphasize_factor == 2) {
     plot [250:1000] [100:1000000] \
-      param_datafile using 1:($2 * 1.0) with lines lw 3 lc rgb "gray", \
-      param_datafile  using 1:($3 * 1.0) with lines lw 3 lc rgb "#aa00ff"
+      param_datafile using 1:($2 * 1.0) with lines lw param_lw lc rgb "gray", \
+      param_datafile  using 1:($3 * 1.0) with lines lw param_lw lc rgb "#aa00ff"
   } else {
     plot [250:1000] [100:1000000] \
-      param_datafile using 1:($2 * 1.0) with lines lw 3 lc rgb "red", \
-      param_datafile  using 1:($3 * 1.0) with lines lw 3 lc rgb "#aa00ff"
+      param_datafile using 1:($2 * 1.0) with lines lw param_lw lc rgb "red", \
+      param_datafile  using 1:($3 * 1.0) with lines lw param_lw lc rgb "#aa00ff"
   }
 } else {
-  set key font ",20"
+  key_font=sprintf(",%d", 3 * param_small_font)
+  set key font key_font   # for some reason, this can't be given in-place
   set key right top
   plot [250:1000] [100:1000000] \
     param_datafile \
     using 1:(($2 * param_lerp) + ($3 * (1-param_lerp))) \
-    with lines lw 3 lc rgb "black" title sprintf("Hb SpO₂ %3d%%", param_lerp * 100)
+    with lines lw param_lw lc rgb "black" title sprintf("Hb SpO₂ %3d%%", param_lerp * 100)
 }
