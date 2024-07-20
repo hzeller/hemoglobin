@@ -42,7 +42,7 @@ automatisch raus.
 
 https://youtu.be/TrGO6Bi2npU
 
-[ ![](img/anim.png) ](https://youtu.be/TrGO6Bi2npU)
+[ ![](img/animation.apng) ](https://youtu.be/TrGO6Bi2npU)
 
 ## Build
 
