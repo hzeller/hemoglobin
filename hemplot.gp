@@ -17,8 +17,8 @@ if (exists("lerp_basename")) {
    param_outfile=sprintf("%s-%03d.png", lerp_basename, lerp_percent);
 }
 
-set terminal pngcairo size param_width, param_height \
-    font sprintf("Helvetica,%d", param_small_font * 1.8)
+standard_font=sprintf("Helvetica,%d", param_small_font * 1.8)
+set terminal pngcairo size param_width, param_height font standard_font
 
 set output param_outfile
 
