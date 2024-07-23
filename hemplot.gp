@@ -68,9 +68,9 @@ set arrow from 660,200 to 660,100000 nohead lw param_lw / 2
 set arrow from 940,200 to 940,100000 nohead lw param_lw / 2
 
 if (param_color_explain) {
-  set label "Bei λ=660nm (Rot)\nHb absorbiert deutlich (10x)\nmehr Licht als HbO₂" center at 660, 300000
-  set label "HbO₂ sieht \"röter\" aus." left at 670, 60000
-  set label "Bei λ=940nm (Infrarot) umgekehrt:\nhier absorbiert HbO₂ mehr als Hb (x1.75)" right at 990, 300000
+  set label "Bei λ=660nm (Rot)\nHHb absorbiert deutlich (10x)\nmehr Licht als O₂Hb" center at 660, 300000
+  set label "O₂Hb sieht \"röter\" aus." left at 670, 60000
+  set label "Bei λ=940nm (Infrarot) umgekehrt:\nhier absorbiert O₂Hb mehr als HHb (x1.75)" right at 990, 300000
 } else {
   set label "λ=660nm (Rot)" center at 660, 150000
   set label "λ=940nm (Infrarot)" center at 940, 150000
