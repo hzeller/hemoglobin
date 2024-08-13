@@ -14,20 +14,31 @@ Wenn man also nur bei einer Wellenlaenge schaut, dann sieht man mehr oder
 weniger Licht, aber weil man kein Vergleichswert hat, kann man daraus noch
 nicht auf die Konzentration schliessen.
 
-Schaut man sich an, was zwei Sensoren bei 660nm und 940nm messen, dann sieht
+Wenn man sich aber die Absorption der Oxygenierungslevel bei unterschiedlichen Farben ansieht
+erkennt man, dass sich besonders viel um 660nm und 940nm tut:
+
+
+| Gesättigt O₂               | Ungesättigt O₂               |
+|----------------------------|------------------------------|
+| ![](img/saturated-hem.png) | ![](img/unsaturated-hem.png) |
+
+
+Wenn man die Werte von Sensoren bei 660nm und 940nm vergleicht, dann sieht
 man, dass bei O₂-gesattigtem Blut 3.8x mehr licht im Infraroten absorbiert wird
 wie bei 660nm Rot.
+
 Und bei ungesaettigtem Blut nur 0.21x soviel (oder
 4.6x 'weniger'). Und das ist ja unabhaengig vom Finger: wenn einer mit doppelt
 so dickem Finger gemessen wird, dann misst man in beiden Wellelängen nur
 die Hälfte; aber da ja die Messung bei beiden Wellenlängen auf die Hälfte
 reduziert sind, ist ja das erwartete Verhältnis von 3.8x immer noch gleich.
 
-![](img/saturated-hem.png)
+![](img/saturated-hem-emphasize.png)
 
-![](img/unsaturated-hem.png)
+![](img/unsaturated-hem-emphasize.png)
 
-Also dadurch dass man bei beiden Wellenlaengen misst, rechnet sich das raus.
+Also dadurch dass man bei beiden Wellenlaengen misst, rechnet sich das raus, weil man sich
+nur das Verhältnis ansieht.
 
 Das gleiche, wenn sich das Lumen aendert ('pumpen' im Finger): mal ist mehr,
 mal weniger Blut in demselben Finger, aber bei voller Sättigung wird man immer

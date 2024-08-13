@@ -11,6 +11,9 @@ param_lw=param_width / 300
 # 0 not, 1=oxi, 2=non-oxi
 param_emphasize_factor= exists("emphasize_factor") ? emphasize_factor : 0;
 
+# 0 all, 1=oxi, 2=non-oxi
+param_only_show = exists("only_show") ? only_show : 0;
+
 # Animation
 param_lerp=exists("lerp_percent") ? (lerp_percent / 100.0) : -1
 if (exists("lerp_basename")) {
@@ -30,7 +33,7 @@ oxi_lo_940nm=693.44
 oxi_hi_940nm=1214
 
 # We only really want to show detailed information in the overview graph
-param_color_explain=(param_lerp < 0 && param_emphasize_factor == 0);
+param_color_explain=(param_lerp < 0 && param_emphasize_factor == 0 && param_only_show == 0);
 
 set palette defined (380 "black", 400 "dark-violet", 440 "blue", 490 '#00b0c0', 530 "green", 560 "yellow", 620 "red", 780 "black")
 
@@ -134,16 +137,22 @@ if (param_lerp < 0) {
   # Depending on the hightlight, we want the colorful graph last to be on top
   if (param_emphasize_factor == 1) {
     plot [250:1000] [100:1000000] \
-      param_datafile  using 1:($3 * 1.0) with lines lw param_lw lc rgb "gray", \
+      param_datafile using 1:($3 * 1.0) with lines lw param_lw lc rgb "gray", \
       param_datafile using 1:($2 * 1.0) with lines lw param_lw lc rgb "red"
   } else if (param_emphasize_factor == 2) {
     plot [250:1000] [100:1000000] \
       param_datafile using 1:($2 * 1.0) with lines lw param_lw lc rgb "gray", \
+      param_datafile using 1:($3 * 1.0) with lines lw param_lw lc rgb "#aa00ff"
+  } else if (param_only_show == 1) {
+    plot [250:1000] [100:1000000] \
+      param_datafile using 1:($2 * 1.0) with lines lw param_lw lc rgb "red"
+  } else if (param_only_show == 2) {
+    plot [250:1000] [100:1000000] \
       param_datafile  using 1:($3 * 1.0) with lines lw param_lw lc rgb "#aa00ff"
-  } else {
+  } else {  # only_show == 0, i.e .all
     plot [250:1000] [100:1000000] \
       param_datafile using 1:($2 * 1.0) with lines lw param_lw lc rgb "red", \
-      param_datafile  using 1:($3 * 1.0) with lines lw param_lw lc rgb "#aa00ff"
+      param_datafile using 1:($3 * 1.0) with lines lw param_lw lc rgb "#aa00ff"
   }
 } else {
   key_font=sprintf(",%d", 3 * param_small_font)
